@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMI Repayment Calculator – FinWise AI</title>
+  <meta name="description" content="Calculate monthly loan installments and generate detailed amortization schedules.">
+  <meta property="og:title" content="EMI Repayment Calculator – FinWise AI">
+  <meta property="og:description" content="Calculate monthly loan installments and generate detailed amortization schedules.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="./css/style.css?v=4">
+</head>
+<body>
+
+
+
+  <!-- Sticky Navigation Bar -->
+  <header>
+    <nav class="navbar" id="main-nav" aria-label="Main Navigation">
+      <a href="./index.html" class="nav-logo" aria-label="FinWise AI Home">
+        FinWise <span>AI</span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./loan.html">Loan Eligibility</a></li>
+        <li><a href="./credit.html">Credit Analysis</a></li>
+        <li><a href="./emi.html" class="active" aria-current="page">EMI Calculator</a></li>
+        <li><a href="./tips.html">Financial Tips</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-container animate-fade-in">
+    <div class="glass-card" id="emi-calculator-form-card" style="max-width: 750px; margin: 0 auto 3rem auto;">
+      <h1 class="highlight-text" style="text-align: center; margin-bottom: 0.5rem;">EMI Repayment Calculator</h1>
+      <p style="text-align: center; margin-bottom: 2rem;">Adjust loan values dynamically using sliders and analyze payment interest shares.</p>
+      
+      <!-- Calculator Form -->
+      <form id="emi-calculator-form" style="display: flex; flex-direction: column; gap: 1.5rem;" onsubmit="event.preventDefault();">
+        
+        <!-- Loan Amount -->
+        <div class="form-group">
+          <label class="form-label">Loan Principal Amount (₹)</label>
+          <div class="input-sync-group">
+            <input type="range" id="loan-amount-slider" class="glass-slider" min="5000" max="1000000" step="5000" value="50000">
+            <input type="number" id="loan-amount-input" class="glass-input glass-input-sync" min="5000" max="1000000" value="50000">
+          </div>
+          <div id="loan-amount-error" style="color: var(--danger); font-size: 0.8rem; display: none; margin-top: 0.25rem;"></div>
+        </div>
+
+        <!-- Interest Rate -->
+        <div class="form-group">
+          <label class="form-label">Annual Interest Rate (% p.a.)</label>
+          <div class="input-sync-group">
+            <input type="range" id="interest-rate-slider" class="glass-slider" min="1" max="25" step="0.1" value="7.5">
+            <input type="number" id="interest-rate-input" class="glass-input glass-input-sync" min="1" max="25" step="0.1" value="7.5">
+          </div>
+          <div id="interest-rate-error" style="color: var(--danger); font-size: 0.8rem; display: none; margin-top: 0.25rem;"></div>
+        </div>
+
+        <!-- Tenure -->
+        <div class="form-group">
+          <label class="form-label">Loan Tenure (Years)</label>
+          <div class="input-sync-group">
+            <input type="range" id="loan-tenure-slider" class="glass-slider" min="1" max="30" step="1" value="15">
+            <input type="number" id="loan-tenure-input" class="glass-input glass-input-sync" min="1" max="30" value="15">
+          </div>
+          <div id="loan-tenure-error" style="color: var(--danger); font-size: 0.8rem; display: none; margin-top: 0.25rem;"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; font-size:1.05rem; padding:0.95rem; margin-top:0.5rem;">
+          Calculate EMI
+        </button>
+      </form>
+    </div>
+
+    <!-- Animated Result Container (Initially Hidden) -->
+    <div id="emi-result-container" style="display: none; max-width: 750px; margin: 3rem auto 0 auto;" class="animate-fade-in">
+      <div class="result-panel">
+        
+        <!-- Large EMI Output -->
+        <div style="text-align: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+          <div style="font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Monthly Installment (EMI)</div>
+          <div class="highlight-text" id="result-emi-val" style="font-size: 3.5rem; font-weight: 800;">₹0</div>
+        </div>
+
+        <!-- Summary Grid -->
+        <div class="emi-summary-grid">
+          <div class="emi-summary-card">
+            <span class="form-label">Loan Amount</span>
+            <div class="emi-summary-val" id="result-amount-recap">₹0</div>
+          </div>
+          <div class="emi-summary-card">
+            <span class="form-label">Interest Rate</span>
+            <div class="emi-summary-val" id="result-rate-recap">0%</div>
+          </div>
+          <div class="emi-summary-card">
+            <span class="form-label">Tenure</span>
+            <div class="emi-summary-val" id="result-tenure-recap">0 Years</div>
+          </div>
+        </div>
+
+        <!-- Breakdown Details -->
+        <div class="grid-3" style="margin-top: 1.5rem; text-align: center;">
+          <div>
+            <span class="form-label" style="font-size:0.8rem;"><span class="label-dot dot-principal"></span>Principal Payable</span>
+            <div style="font-weight: 700; font-size: 1.2rem; margin-top: 0.25rem;" id="result-total-principal">₹0</div>
+          </div>
+          <div>
+            <span class="form-label" style="font-size:0.8rem;"><span class="label-dot dot-interest"></span>Interest Payable</span>
+            <div style="font-weight: 700; font-size: 1.2rem; margin-top: 0.25rem; color: var(--warning);" id="result-total-interest">₹0</div>
+          </div>
+          <div>
+            <span class="form-label" style="font-size:0.8rem;">Total Repayment</span>
+            <div style="font-weight: 700; font-size: 1.2rem; margin-top: 0.25rem; color: var(--accent);" id="result-total-repayment">₹0</div>
+          </div>
+        </div>
+
+        <!-- Progress visual bar -->
+        <div class="amortization-bar-container">
+          <div class="amortization-bar">
+            <div class="bar-fill-principal" id="bar-principal"></div>
+            <div class="bar-fill-interest" id="bar-interest"></div>
+          </div>
+          <div class="bar-labels">
+            <span id="label-principal-share">Principal: 0%</span>
+            <span id="label-interest-share">Interest: 0%</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-col">
+        <a href="./index.html" class="footer-logo" aria-label="FinWise AI Home">FinWise <span>AI</span></a>
+        <p class="footer-desc">Intelligent algorithms mapping financial parameters. Optimize eligibility rates, track credit scoring, model repayments, and secure real-time insights.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Modules</h4>
+        <ul class="footer-links">
+          <li><a href="./loan.html">Loan Eligibility</a></li>
+          <li><a href="./credit.html">Credit Diagnostics</a></li>
+          <li><a href="./emi.html">EMI Calculators</a></li>
+          <li><a href="./tips.html">AI Advisory Tips</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Advisory</a></li>
+          <li><a href="#">Security Audit Log</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-text">
+        <span>© 2026 FinWise AI. All Rights Reserved.</span>
+        <span style="font-size: 0.75rem;">Developed as part of the SmartBridge VIP Program.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/script.js"></script>
+</body>
+</html>

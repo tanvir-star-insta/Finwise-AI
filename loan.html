@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Eligibility Analyzer – FinWise AI</title>
+  <meta name="description" content="Calculate and evaluate your loan eligibility status dynamically with FinWise AI.">
+  <meta property="og:title" content="Loan Eligibility Analyzer – FinWise AI">
+  <meta property="og:description" content="Calculate and evaluate your loan eligibility status dynamically with FinWise AI.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="./css/style.css?v=4">
+</head>
+<body>
+
+
+
+  <!-- Sticky Navigation Bar -->
+  <header>
+    <nav class="navbar" id="main-nav" aria-label="Main Navigation">
+      <a href="./index.html" class="nav-logo" aria-label="FinWise AI Home">
+        FinWise <span>AI</span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="./index.html">Home</a></li>
+        <li><a href="./loan.html" class="active" aria-current="page">Loan Eligibility</a></li>
+        <li><a href="./credit.html">Credit Analysis</a></li>
+        <li><a href="./emi.html">EMI Calculator</a></li>
+        <li><a href="./tips.html">Financial Tips</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-container animate-fade-up">
+    <div class="glass-card" id="loan-eligibility-card" style="max-width: 750px; margin: 0 auto 3rem auto;">
+      <h1 class="highlight-text" style="text-align: center; margin-bottom: 0.5rem;">Loan Eligibility Analyzer</h1>
+      <p style="text-align: center; margin-bottom: 2rem;">Analyze borrowing capabilities against risk indices and record financial configurations to Google Sheets.</p>
+      
+      <!-- API Integrations (Configured in Code) -->
+
+      
+      <!-- Calculator Form -->
+      <form id="loan-eligibility-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Applicant Name -->
+        <div class="form-group">
+          <label for="applicant-name" class="form-label">Applicant Name</label>
+          <input type="text" id="applicant-name" class="glass-input" placeholder="e.g. Alexander Mercer" required>
+        </div>
+
+        <!-- Row: Salary & Age -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="monthly-salary" class="form-label">Gross Income (₹)</label>
+            <input type="number" id="monthly-salary" class="glass-input" placeholder="e.g. 45000" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="applicant-age" class="form-label">Age (Years)</label>
+            <input type="number" id="applicant-age" class="glass-input" placeholder="e.g. 25" min="0" max="100" required>
+          </div>
+        </div>
+
+        <!-- Row: Existing EMI & Credit Score -->
+        <div class="form-group">
+          <label for="credit-score" class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+            Credit Score 
+            <span id="credit-score-badge" style="background:var(--accent-glow); color:var(--accent); font-weight:700; padding:0.15rem 0.5rem; border-radius:0.25rem;">750</span>
+          </label>
+          <input type="range" id="credit-score" class="glass-slider" min="300" max="850" value="750">
+        </div>
+
+        <div class="form-group">
+          <label for="existing-emi" class="form-label">Existing EMI Outflow (₹)</label>
+          <input type="number" id="existing-emi" class="glass-input" placeholder="e.g. 5000" min="0" value="0" required>
+        </div>
+
+        <!-- Action Button -->
+        <button type="submit" class="btn btn-primary shimmer" style="margin-top: 1rem; width:100%; font-size:1.1rem; padding:1rem;">
+          Evaluate Eligibility
+        </button>
+      </form>
+    </div>
+
+    <!-- Animated Result Container (Initially Hidden) -->
+    <div id="loan-result-container" style="display: none; max-width: 750px; margin: 3rem auto 0 auto;" class="animate-fade-up pulse-glow">
+      <div class="result-panel" id="loan-result-card">
+        
+        <!-- Status Header -->
+        <div style="text-align: center;">
+          <div class="result-icon-container" id="result-icon-wrapper">
+            <!-- Dynamically populated SVG -->
+          </div>
+          <h2 id="result-status-title" style="font-size: 2rem; font-weight:800; margin-bottom: 0.5rem;">Loan Status</h2>
+          <p id="result-status-desc" style="font-size: 0.95rem; max-width: 500px; margin: 0 auto; color: var(--text-secondary);"></p>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="result-metrics">
+          <div class="result-metric-card">
+            <span class="form-label">Max Approved Loan</span>
+            <div class="result-val highlight-text" id="result-approved-amount">₹0</div>
+          </div>
+          <div class="result-metric-card">
+            <span class="form-label">Risk Rating</span>
+            <div style="margin-top:0.5rem;"><span class="badge" id="result-risk-badge">Undetermined</span></div>
+          </div>
+          <div class="result-metric-card">
+            <span class="form-label">DTI Ratio</span>
+            <div class="result-val" id="result-dti-val" style="color:var(--text-primary);">0%</div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.8rem; text-align: center; color: var(--text-muted); border-top: 1px dashed var(--glass-border); padding-top: 1.5rem; margin-top: 0.5rem;">
+          *Disclaimer: Eligibility is simulated based on debt-to-income limits and credit tiers. Actual qualification subject to bank review.
+        </div>
+        
+        <!-- Sheet Sync Status -->
+        <div id="sheet-sync-status" style="display: none; text-align: center; padding: 0.75rem; margin-top: 1rem; border-radius: 0.5rem; font-size: 0.9rem; background: rgba(0,0,0,0.2);">
+        </div>
+      </div>
+
+      <!-- AI Advisor Card -->
+      <div id="ai-advisor-card" class="glass-card" style="display: none; margin-top: 2rem; border: 1px solid var(--accent); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -50px; left: -50px; width: 100px; height: 100px; background: var(--accent-glow); filter: blur(40px); border-radius: 50%;"></div>
+        
+        <h3 class="highlight-text" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; position: relative; z-index: 1;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M4 12a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M20 12a2 2 0 0 1-2-2h-2a2 2 0 0 1-2 2 2 2 0 0 1 2 2h2a2 2 0 0 1 2-2z"/><path d="M12 22a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2 2 2 0 0 1 2 2v2a2 2 0 0 1-2 2z"/><path d="M12 12m-2 0a2 2 0 1 0 4 0 2 2 0 1 0-4 0"/></svg>
+          FinWise AI Advisor
+        </h3>
+
+        <div id="ai-loading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; position: relative; z-index: 1;">
+          <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">Analyzing profile...</p>
+        </div>
+
+        <div id="ai-response-content" style="display: none; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 1.5rem;">
+          <div class="ai-section animate-slide-in-right delay-100">
+            <h4 style="color: var(--text-primary); margin-bottom: 0.25rem; font-size: 1.1rem;">Loan Advice</h4>
+            <p id="ai-loan-advice" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;"></p>
+          </div>
+          <div class="ai-section animate-slide-in-left delay-200">
+            <h4 style="color: var(--text-primary); margin-bottom: 0.25rem; font-size: 1.1rem;">Financial Suggestions</h4>
+            <p id="ai-financial-suggestions" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;"></p>
+          </div>
+          <div class="ai-section animate-slide-in-right delay-300">
+            <h4 style="color: var(--text-primary); margin-bottom: 0.25rem; font-size: 1.1rem;">Credit Improvement</h4>
+            <p id="ai-credit-improvement" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;"></p>
+          </div>
+          <div class="ai-section animate-slide-in-left delay-400">
+            <h4 style="color: var(--text-primary); margin-bottom: 0.25rem; font-size: 1.1rem;">Savings Recommendation</h4>
+            <p id="ai-savings-recommendation" style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;"></p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-col">
+        <a href="./index.html" class="footer-logo" aria-label="FinWise AI Home">FinWise <span>AI</span></a>
+        <p class="footer-desc">Intelligent algorithms mapping financial parameters. Optimize eligibility rates, track credit scoring, model repayments, and secure real-time insights.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Modules</h4>
+        <ul class="footer-links">
+          <li><a href="./loan.html">Loan Eligibility</a></li>
+          <li><a href="./credit.html">Credit Diagnostics</a></li>
+          <li><a href="./emi.html">EMI Calculators</a></li>
+          <li><a href="./tips.html">AI Advisory Tips</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Advisory</a></li>
+          <li><a href="#">Security Audit Log</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-bottom-text">
+        <span>© 2026 FinWise AI. All Rights Reserved.</span>
+        <span style="font-size: 0.75rem;">Developed as part of the SmartBridge VIP Program.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/script.js"></script>
+</body>
+</html>
