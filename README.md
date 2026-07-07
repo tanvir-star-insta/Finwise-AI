@@ -68,5 +68,4 @@ The frontend is a static site. You can serve it using Python's built-in HTTP ser
 *   **Never commit your `.env` file to version control.** It is already included in the `.gitignore` to prevent accidental uploads.
 *   The frontend uses the `js/config.js` file to route all AI traffic exclusively through the local `localhost:3000` proxy, ensuring zero credential leakage in network tabs.
 
-## 👨‍💻 Development Team
 Developed as part of the SmartBridge VIP Program.
